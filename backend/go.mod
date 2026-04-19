@@ -1,13 +1,13 @@
 module github.com/patrickjmcd/reedme
 
-go 1.25
+go 1.25.0
 
 require (
 	github.com/0x2E/feedfinder v0.1.1
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/uuid v1.6.0
-	github.com/jackc/pgx/v5 v5.8.0
+	github.com/jackc/pgx/v5 v5.9.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/mmcdole/gofeed v1.3.0
 	golang.org/x/crypto v0.46.0
