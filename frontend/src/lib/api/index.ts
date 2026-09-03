@@ -15,6 +15,7 @@ import type {
   ValidateFeedResponse,
   CreateBookmarkRequest,
   MarkItemsReadRequest,
+  MarkAllItemsReadParams,
   ListItemsParams,
   ImportOpmlResponse,
   BatchCreateFeedsRequest,
@@ -102,6 +103,17 @@ export const itemAPI = {
 
   markUnread: (data: MarkItemsReadRequest) =>
     api.patch<void>("/items/-/unread", data),
+
+  markAllRead: (params?: MarkAllItemsReadParams) => {
+    const query = new URLSearchParams();
+    if (params?.feed_id) query.set("feed_id", params.feed_id.toString());
+    if (params?.group_id) query.set("group_id", params.group_id.toString());
+
+    const queryString = query.toString();
+    return api.patch<void>(
+      `/items/-/read-all${queryString ? `?${queryString}` : ""}`,
+    );
+  },
 };
 
 // Bookmark APIs

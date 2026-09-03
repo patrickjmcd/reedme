@@ -37,7 +37,7 @@ type Storer interface {
 	BatchCreateItemsIgnore(feedID int64, inputs []BatchCreateItemInput) (int, error)
 	UpdateItemUnread(id int64, unread bool) error
 	BatchUpdateItemsUnread(ids []int64, unread bool) error
-	MarkAllAsRead(feedID *int64) error
+	MarkAllAsRead(feedID *int64, groupID *int64) error
 	ItemExists(feedID int64, guid string) (bool, error)
 	SearchItems(query string, limit int) ([]*SearchItemResult, error)
 	CountItems(params ListItemsParams) (int, error)

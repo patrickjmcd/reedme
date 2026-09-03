@@ -115,6 +115,7 @@ func (h *Handler) SetupRouter() *gin.Engine {
 			auth.GET("/items", h.listItems)
 			auth.GET("/items/:id", h.getItem)
 			auth.PATCH("/items/-/read", h.markItemsRead)
+			auth.PATCH("/items/-/read-all", h.markAllItemsRead)
 			auth.PATCH("/items/-/unread", h.markItemsUnread)
 
 			auth.GET("/search", h.search)

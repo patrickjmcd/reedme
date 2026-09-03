@@ -129,6 +129,35 @@ func (h *Handler) markItemsRead(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+func (h *Handler) markAllItemsRead(c *gin.Context) {
+	var feedID *int64
+	if v := c.Query("feed_id"); v != "" {
+		id, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			badRequestError(c, "invalid feed_id")
+			return
+		}
+		feedID = &id
+	}
+
+	var groupID *int64
+	if v := c.Query("group_id"); v != "" {
+		id, err := strconv.ParseInt(v, 10, 64)
+		if err != nil {
+			badRequestError(c, "invalid group_id")
+			return
+		}
+		groupID = &id
+	}
+
+	if err := h.store.MarkAllAsRead(feedID, groupID); err != nil {
+		internalError(c, err, "mark all items as read")
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 func (h *Handler) markItemsUnread(c *gin.Context) {
 	var req markItemsReadRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

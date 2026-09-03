@@ -173,6 +173,7 @@ export const svMessages: PartialMessages = {
   "article.list.loadMore": "Ladda mer",
   "article.list.loading": "Laddar...",
   "article.list.markAllRead": "Markera alla som lasta",
+  "article.list.markAllReadEverywhere": "Markera alla olasta som lasta",
   "article.list.noArticles": "Inga artiklar hittades",
   "article.list.noFeeds": "Inga floden an. Ga till flodeshantering for att lagga till ditt forsta flode.",
   "article.list.openFeedManagement": "Oppna flodeshantering",

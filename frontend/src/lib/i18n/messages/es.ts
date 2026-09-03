@@ -173,6 +173,7 @@ export const esMessages: PartialMessages = {
   "article.list.loadMore": "Cargar mas",
   "article.list.loading": "Cargando...",
   "article.list.markAllRead": "Marcar todo como leido",
+  "article.list.markAllReadEverywhere": "Marcar todo lo no leido como leido",
   "article.list.noArticles": "No se encontraron articulos",
   "article.list.noFeeds": "Aun no hay feeds. Ve a Gestion de feeds para agregar el primero.",
   "article.list.openFeedManagement": "Abrir gestion de feeds",

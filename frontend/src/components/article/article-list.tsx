@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCheck, Loader2 } from "lucide-react";
@@ -12,6 +12,7 @@ import { useUrlState, type ArticleFilter } from "@/hooks/use-url-state";
 import {
   itemQueries,
   useItems,
+  useMarkAllItemsRead,
   useMarkItemsRead,
   useMarkItemsUnread,
 } from "@/queries/items";
@@ -57,6 +58,8 @@ export function ArticleList() {
   const { feeds, getFeedById, isLoading: isFeedsLoading } = useFeedLookup();
   const markItemsRead = useMarkItemsRead();
   const markItemsUnread = useMarkItemsUnread();
+  const markAllItemsRead = useMarkAllItemsRead();
+  const [offerMarkAllSourceRead, setOfferMarkAllSourceRead] = useState(false);
   const { isItemStarred, getBookmarkByItemId } = useBookmarkLookup();
   const createBookmark = useCreateBookmark();
   const deleteBookmark = useDeleteBookmark();
@@ -123,6 +126,11 @@ export function ArticleList() {
 
   const unreadCount = displayArticles.filter((a) => a.unread).length;
   const hasNoFeeds = !isFeedsLoading && feeds.length === 0;
+
+  // Reset the follow-up "mark all unread as read" offer whenever the viewed source changes.
+  useEffect(() => {
+    setOfferMarkAllSourceRead(false);
+  }, [selectedFeedId, selectedGroupId, articleFilter]);
 
   const handleToggleRead = useCallback(
     async (article: Item) => {
@@ -230,9 +238,25 @@ export function ArticleList() {
           }
           return next;
         });
+      } else if (itemsQuery.hasNextPage) {
+        // More unread items may exist beyond what's currently loaded (paginated),
+        // so offer a follow-up action to mark the entire source as read.
+        setOfferMarkAllSourceRead(true);
       }
     } catch (error) {
       console.error("Failed to mark all as read:", error);
+    }
+  };
+
+  const handleMarkAllSourceAsRead = async () => {
+    try {
+      await markAllItemsRead.mutateAsync({
+        feedId: selectedFeedId,
+        groupId: selectedGroupId,
+      });
+      setOfferMarkAllSourceRead(false);
+    } catch (error) {
+      console.error("Failed to mark all unread as read:", error);
     }
   };
 
@@ -246,12 +270,22 @@ export function ArticleList() {
         <Button
           variant="outline"
           size="sm"
-          onClick={handleMarkAllAsRead}
-          disabled={unreadCount === 0}
+          onClick={
+            offerMarkAllSourceRead
+              ? handleMarkAllSourceAsRead
+              : handleMarkAllAsRead
+          }
+          disabled={
+            offerMarkAllSourceRead
+              ? markAllItemsRead.isPending
+              : unreadCount === 0
+          }
           className="gap-1.5 text-xs"
         >
           <CheckCheck className="h-4 w-4" />
-          {t("article.list.markAllRead")}
+          {offerMarkAllSourceRead
+            ? t("article.list.markAllReadEverywhere")
+            : t("article.list.markAllRead")}
         </Button>
       </ContentHeader>
 

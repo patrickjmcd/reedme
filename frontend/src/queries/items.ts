@@ -219,3 +219,21 @@ export function useMarkItemsRead() {
 export function useMarkItemsUnread() {
   return useSetItemsReadState(true);
 }
+
+export function useMarkAllItemsRead() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: { feedId?: number | null; groupId?: number | null }) =>
+      itemAPI.markAllRead({
+        feed_id: params.feedId ?? undefined,
+        group_id: params.groupId ?? undefined,
+      }),
+    onSuccess: async () => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: queryKeys.items.all }),
+        qc.invalidateQueries({ queryKey: queryKeys.feeds.all }),
+      ]);
+    },
+  });
+}

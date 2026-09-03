@@ -240,14 +240,27 @@ func (s *Store) batchUpdateItemsUnreadChunk(ids []int64, unread bool) error {
 	return err
 }
 
-// MarkAllAsRead marks items as read. If feedID is nil, marks ALL items across all feeds.
-// If feedID is non-nil, only marks items from that specific feed.
-func (s *Store) MarkAllAsRead(feedID *int64) error {
+// MarkAllAsRead marks items as read, optionally filtered by feed or group.
+// If both feedID and groupID are nil, marks ALL items across all feeds.
+func (s *Store) MarkAllAsRead(feedID *int64, groupID *int64) error {
+	query := `UPDATE items SET unread = 0`
+	args := []interface{}{}
+	conditions := []string{}
+
 	if feedID != nil {
-		_, err := s.db.Exec(`UPDATE items SET unread = 0 WHERE feed_id = :feed_id`, sql.Named("feed_id", *feedID))
-		return err
+		conditions = append(conditions, "feed_id = :feed_id")
+		args = append(args, sql.Named("feed_id", *feedID))
 	}
-	_, err := s.db.Exec(`UPDATE items SET unread = 0`)
+	if groupID != nil {
+		conditions = append(conditions, "feed_id IN (SELECT id FROM feeds WHERE group_id = :group_id)")
+		args = append(args, sql.Named("group_id", *groupID))
+	}
+
+	if len(conditions) > 0 {
+		query += ` WHERE ` + strings.Join(conditions, " AND ")
+	}
+
+	_, err := s.db.Exec(query, args...)
 	return err
 }
 

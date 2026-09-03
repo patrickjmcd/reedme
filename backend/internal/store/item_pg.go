@@ -200,12 +200,25 @@ func (s *PGStore) pgBatchUpdateItemsUnreadChunk(ids []int64, unread bool) error 
 	return err
 }
 
-func (s *PGStore) MarkAllAsRead(feedID *int64) error {
+func (s *PGStore) MarkAllAsRead(feedID *int64, groupID *int64) error {
+	query := `UPDATE items SET unread = false`
+	args := []interface{}{}
+	conditions := []string{}
+
 	if feedID != nil {
-		_, err := s.db.Exec(`UPDATE items SET unread = false WHERE feed_id = $1`, *feedID)
-		return err
+		args = append(args, *feedID)
+		conditions = append(conditions, fmt.Sprintf("feed_id = $%d", len(args)))
 	}
-	_, err := s.db.Exec(`UPDATE items SET unread = false`)
+	if groupID != nil {
+		args = append(args, *groupID)
+		conditions = append(conditions, fmt.Sprintf("feed_id IN (SELECT id FROM feeds WHERE group_id = $%d)", len(args)))
+	}
+
+	if len(conditions) > 0 {
+		query += ` WHERE ` + strings.Join(conditions, " AND ")
+	}
+
+	_, err := s.db.Exec(query, args...)
 	return err
 }
 

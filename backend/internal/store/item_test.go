@@ -400,7 +400,7 @@ func TestMarkAllAsRead(t *testing.T) {
 	item3 := mustCreateItem(t, store, feed2.ID, "guid-3", "Item 3", "https://example.com/3", "Content 3", 300)
 
 	t.Run("mark all items in a specific feed", func(t *testing.T) {
-		if err := store.MarkAllAsRead(&feed1.ID); err != nil {
+		if err := store.MarkAllAsRead(&feed1.ID, nil); err != nil {
 			t.Fatalf("MarkAllAsRead() failed: %v", err)
 		}
 
@@ -429,8 +429,34 @@ func TestMarkAllAsRead(t *testing.T) {
 		t.Fatalf("UpdateItemUnread() failed: %v", err)
 	}
 
+	t.Run("mark all items in a specific group", func(t *testing.T) {
+		otherGroup := mustCreateGroup(t, store, "Other Group")
+		feed3 := mustCreateFeed(t, store, otherGroup.ID, "Feed 3", "https://example.com/feed3", "https://example.com", "")
+		item4 := mustCreateItem(t, store, feed3.ID, "guid-4", "Item 4", "https://example.com/4", "Content 4", 400)
+
+		if err := store.MarkAllAsRead(nil, &group.ID); err != nil {
+			t.Fatalf("MarkAllAsRead() failed: %v", err)
+		}
+
+		updated3, err := store.GetItem(item3.ID)
+		if err != nil {
+			t.Fatalf("GetItem() failed: %v", err)
+		}
+		updated4, err := store.GetItem(item4.ID)
+		if err != nil {
+			t.Fatalf("GetItem() failed: %v", err)
+		}
+
+		if updated3.Unread {
+			t.Error("expected group's items to be read")
+		}
+		if !updated4.Unread {
+			t.Error("expected other group's items to remain unread")
+		}
+	})
+
 	t.Run("mark all items across all feeds", func(t *testing.T) {
-		if err := store.MarkAllAsRead(nil); err != nil {
+		if err := store.MarkAllAsRead(nil, nil); err != nil {
 			t.Fatalf("MarkAllAsRead() failed: %v", err)
 		}
 

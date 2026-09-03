@@ -172,6 +172,7 @@ export const enMessages = {
   "article.list.loadMore": "Load more",
   "article.list.loading": "Loading...",
   "article.list.markAllRead": "Mark all as read",
+  "article.list.markAllReadEverywhere": "Mark all unread as read",
   "article.list.noArticles": "No articles found",
   "article.list.noFeeds": "No feeds yet. Go to Feed Management to add your first feed.",
   "article.list.openFeedManagement": "Open Feed Management",

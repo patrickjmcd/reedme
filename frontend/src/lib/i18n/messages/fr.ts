@@ -173,6 +173,7 @@ export const frMessages: PartialMessages = {
   "article.list.loadMore": "Charger plus",
   "article.list.loading": "Chargement...",
   "article.list.markAllRead": "Tout marquer comme lu",
+  "article.list.markAllReadEverywhere": "Marquer tous les non lus comme lus",
   "article.list.noArticles": "Aucun article trouve",
   "article.list.noFeeds": "Aucun flux. Allez dans la gestion des flux pour ajouter votre premier flux.",
   "article.list.openFeedManagement": "Ouvrir la gestion des flux",
