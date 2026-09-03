@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://github.com/patrickjmcd/reedme/compare/v1.2.0...v1.3.0) (2026-09-03)
+
+
+### Features
+
+* mark all unread as read across paginated sources ([e9012a9](https://github.com/patrickjmcd/reedme/commit/e9012a94bf4c711f691a09e1d7fcdfe84b39901e))
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/jackc/pgx/v5 to v5.9.2 [security] ([08f978d](https://github.com/patrickjmcd/reedme/commit/08f978d65c81f253bb3f40d5427cfb85c420b67f))
+* **deps:** update module github.com/jackc/pgx/v5 to v5.9.2 [security] ([2f07711](https://github.com/patrickjmcd/reedme/commit/2f07711ae0724a27e2d0f26ba25ca9b6598cf8b3))
+* **deps:** update module golang.org/x/crypto to v0.52.0 [security] ([e40f4c2](https://github.com/patrickjmcd/reedme/commit/e40f4c23470985ece743da48c653118d8bce2ea9))
+* **deps:** update module golang.org/x/crypto to v0.52.0 [security] ([c3d767e](https://github.com/patrickjmcd/reedme/commit/c3d767e470ec41d3cbdfc7e38fdd393b3f084b6b))
+
 ## [1.2.0](https://github.com/patrickjmcd/reedme/compare/v1.1.2...v1.2.0) (2026-02-23)
 
 
