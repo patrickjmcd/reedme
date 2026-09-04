@@ -8,7 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.9.2
-	github.com/mattn/go-isatty v0.0.20
+	github.com/mattn/go-isatty v0.0.24
 	github.com/mmcdole/gofeed v1.3.0
 	golang.org/x/crypto v0.52.0
 	golang.org/x/oauth2 v0.34.0
