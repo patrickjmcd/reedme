@@ -38,7 +38,7 @@ runs:
 
     - name: Set up Go
       if: inputs.setup-go == 'true'
-      uses: actions/setup-go@v6
+      uses: actions/setup-go@v7
       with:
         go-version-file: backend/go.mod
         cache-dependency-path: backend/go.sum
