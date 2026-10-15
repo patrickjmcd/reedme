@@ -1,4 +1,4 @@
-FROM alpine:3.24.1
+FROM alpine:3.24.2
 ARG TARGETOS=linux
 ARG TARGETARCH
 LABEL org.opencontainers.image.source="https://github.com/patrickjmcd/reedme"
