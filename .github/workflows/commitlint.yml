@@ -14,6 +14,9 @@ concurrency:
 
 jobs:
   commitlint:
+    # release-please's commits are generated (and their changelog bodies
+    # break the line-length rules), so don't lint its release PRs.
+    if: ${{ !startsWith(github.head_ref, 'release-please--') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
