@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/patrickjmcd/reedme/compare/v1.3.0...v1.3.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lucide-react to v1 ([#59](https://github.com/patrickjmcd/reedme/issues/59)) ([7715974](https://github.com/patrickjmcd/reedme/commit/7715974eb74f8a8b6edfcf086c073911c8a5f3ac))
+* **deps:** update dependency shadcn to v4 ([#60](https://github.com/patrickjmcd/reedme/issues/60)) ([e237acf](https://github.com/patrickjmcd/reedme/commit/e237acf2c42e2de531b2b8f840cf85149afe3d3d))
+
 ## [1.3.0](https://github.com/patrickjmcd/reedme/compare/v1.2.0...v1.3.0) (2026-09-03)
 
 
