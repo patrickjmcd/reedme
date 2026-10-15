@@ -24,7 +24,7 @@ runs:
   steps:
     - name: Set up pnpm
       if: inputs.setup-node == 'true'
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
       with:
         version: ${{ inputs.pnpm-version }}
 
