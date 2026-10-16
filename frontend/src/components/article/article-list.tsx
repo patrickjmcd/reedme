@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCheck, Loader2 } from "lucide-react";
@@ -59,7 +59,12 @@ export function ArticleList() {
   const markItemsRead = useMarkItemsRead();
   const markItemsUnread = useMarkItemsUnread();
   const markAllItemsRead = useMarkAllItemsRead();
-  const [offerMarkAllSourceRead, setOfferMarkAllSourceRead] = useState(false);
+  // The follow-up "mark all unread as read" offer belongs to the source it was
+  // made for: switching feed, group or filter drops it without an effect, and
+  // a request that finishes after a switch can't show it for the new source.
+  const sourceKey = `${selectedFeedId ?? ""}|${selectedGroupId ?? ""}|${articleFilter}`;
+  const [offerSourceKey, setOfferSourceKey] = useState<string | null>(null);
+  const offerMarkAllSourceRead = offerSourceKey === sourceKey;
   const { isItemStarred, getBookmarkByItemId } = useBookmarkLookup();
   const createBookmark = useCreateBookmark();
   const deleteBookmark = useDeleteBookmark();
@@ -126,11 +131,6 @@ export function ArticleList() {
 
   const unreadCount = displayArticles.filter((a) => a.unread).length;
   const hasNoFeeds = !isFeedsLoading && feeds.length === 0;
-
-  // Reset the follow-up "mark all unread as read" offer whenever the viewed source changes.
-  useEffect(() => {
-    setOfferMarkAllSourceRead(false);
-  }, [selectedFeedId, selectedGroupId, articleFilter]);
 
   const handleToggleRead = useCallback(
     async (article: Item) => {
@@ -241,7 +241,7 @@ export function ArticleList() {
       } else if (itemsQuery.hasNextPage) {
         // More unread items may exist beyond what's currently loaded (paginated),
         // so offer a follow-up action to mark the entire source as read.
-        setOfferMarkAllSourceRead(true);
+        setOfferSourceKey(sourceKey);
       }
     } catch (error) {
       console.error("Failed to mark all as read:", error);
@@ -254,7 +254,7 @@ export function ArticleList() {
         feedId: selectedFeedId,
         groupId: selectedGroupId,
       });
-      setOfferMarkAllSourceRead(false);
+      setOfferSourceKey(null);
     } catch (error) {
       console.error("Failed to mark all unread as read:", error);
     }
