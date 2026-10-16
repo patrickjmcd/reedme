@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface FeedFaviconProps {
@@ -7,11 +7,9 @@ interface FeedFaviconProps {
 }
 
 export function FeedFavicon({ src, className }: FeedFaviconProps) {
-  const [loadFailed, setLoadFailed] = useState(!src);
-
-  useEffect(() => {
-    setLoadFailed(!src);
-  }, [src]);
+  // Remember which URL failed, so a new src is tried again without an effect.
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const loadFailed = failedSrc === src;
 
   if (!src || loadFailed) {
     return (
@@ -31,7 +29,7 @@ export function FeedFavicon({ src, className }: FeedFaviconProps) {
       alt=""
       className={cn("shrink-0 rounded", className)}
       loading="lazy"
-      onError={() => setLoadFailed(true)}
+      onError={() => setFailedSrc(src)}
     />
   );
 }
