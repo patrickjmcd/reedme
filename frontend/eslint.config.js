@@ -20,7 +20,18 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
-      'react-refresh/only-export-components': 'error',
+      // TanStack Router file routes export `Route = createFileRoute(...)({
+      // component })` next to the component. Treating the route creators as
+      // HOCs counts that as a component export (allowExportNames doesn't:
+      // plugin 0.5 then flags the local component). allowConstantExport
+      // restates the vite preset's default, which these options replace.
+      'react-refresh/only-export-components': [
+        'error',
+        {
+          allowConstantExport: true,
+          extraHOCs: ['createRootRoute', 'createFileRoute', 'createLazyFileRoute'],
+        },
+      ],
     },
   },
   {
