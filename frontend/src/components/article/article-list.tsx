@@ -28,6 +28,7 @@ import { queryKeys } from "@/queries/keys";
 import { getFaviconUrl } from "@/lib/api/favicon";
 import { useI18n } from "@/lib/i18n";
 import type { Item } from "@/lib/api";
+import { useSourceOffer } from "@/hooks/use-source-offer";
 
 export function ArticleList() {
   const { t } = useI18n();
@@ -59,12 +60,10 @@ export function ArticleList() {
   const markItemsRead = useMarkItemsRead();
   const markItemsUnread = useMarkItemsUnread();
   const markAllItemsRead = useMarkAllItemsRead();
-  // The follow-up "mark all unread as read" offer belongs to the source it was
-  // made for: switching feed, group or filter drops it without an effect, and
-  // a request that finishes after a switch can't show it for the new source.
+  // The follow-up "mark all unread as read" offer: see useSourceOffer.
   const sourceKey = `${selectedFeedId ?? ""}|${selectedGroupId ?? ""}|${articleFilter}`;
-  const [offerSourceKey, setOfferSourceKey] = useState<string | null>(null);
-  const offerMarkAllSourceRead = offerSourceKey === sourceKey;
+  const sourceOffer = useSourceOffer(sourceKey);
+  const offerMarkAllSourceRead = sourceOffer.offered;
   const { isItemStarred, getBookmarkByItemId } = useBookmarkLookup();
   const createBookmark = useCreateBookmark();
   const deleteBookmark = useDeleteBookmark();
@@ -201,6 +200,7 @@ export function ArticleList() {
   );
 
   const handleMarkAllAsRead = async () => {
+    const generation = sourceOffer.generation;
     let unreadIds = displayArticles
       .filter((a) => a.unread && a.id > 0)
       .map((a) => a.id);
@@ -241,7 +241,7 @@ export function ArticleList() {
       } else if (itemsQuery.hasNextPage) {
         // More unread items may exist beyond what's currently loaded (paginated),
         // so offer a follow-up action to mark the entire source as read.
-        setOfferSourceKey(sourceKey);
+        sourceOffer.offer(generation);
       }
     } catch (error) {
       console.error("Failed to mark all as read:", error);
@@ -249,12 +249,13 @@ export function ArticleList() {
   };
 
   const handleMarkAllSourceAsRead = async () => {
+    const generation = sourceOffer.generation;
     try {
       await markAllItemsRead.mutateAsync({
         feedId: selectedFeedId,
         groupId: selectedGroupId,
       });
-      setOfferSourceKey(null);
+      sourceOffer.withdraw(generation);
     } catch (error) {
       console.error("Failed to mark all unread as read:", error);
     }

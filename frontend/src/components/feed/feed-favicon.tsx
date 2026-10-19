@@ -7,9 +7,14 @@ interface FeedFaviconProps {
 }
 
 export function FeedFavicon({ src, className }: FeedFaviconProps) {
-  // Remember which URL failed, so a new src is tried again without an effect.
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const loadFailed = failedSrc === src;
+  // Retry whenever src changes (including back to a URL that failed before),
+  // resetting the failure during render rather than in an effect.
+  const [loadedSrc, setLoadedSrc] = useState(src);
+  const [loadFailed, setLoadFailed] = useState(false);
+  if (src !== loadedSrc) {
+    setLoadedSrc(src);
+    setLoadFailed(false);
+  }
 
   if (!src || loadFailed) {
     return (
@@ -29,7 +34,7 @@ export function FeedFavicon({ src, className }: FeedFaviconProps) {
       alt=""
       className={cn("shrink-0 rounded", className)}
       loading="lazy"
-      onError={() => setFailedSrc(src)}
+      onError={() => setLoadFailed(true)}
     />
   );
 }
