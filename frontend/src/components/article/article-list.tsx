@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCheck, Loader2 } from "lucide-react";
@@ -28,6 +28,7 @@ import { queryKeys } from "@/queries/keys";
 import { getFaviconUrl } from "@/lib/api/favicon";
 import { useI18n } from "@/lib/i18n";
 import type { Item } from "@/lib/api";
+import { useSourceOffer } from "@/hooks/use-source-offer";
 
 export function ArticleList() {
   const { t } = useI18n();
@@ -59,7 +60,10 @@ export function ArticleList() {
   const markItemsRead = useMarkItemsRead();
   const markItemsUnread = useMarkItemsUnread();
   const markAllItemsRead = useMarkAllItemsRead();
-  const [offerMarkAllSourceRead, setOfferMarkAllSourceRead] = useState(false);
+  // The follow-up "mark all unread as read" offer: see useSourceOffer.
+  const sourceKey = `${selectedFeedId ?? ""}|${selectedGroupId ?? ""}|${articleFilter}`;
+  const sourceOffer = useSourceOffer(sourceKey);
+  const offerMarkAllSourceRead = sourceOffer.offered;
   const { isItemStarred, getBookmarkByItemId } = useBookmarkLookup();
   const createBookmark = useCreateBookmark();
   const deleteBookmark = useDeleteBookmark();
@@ -126,11 +130,6 @@ export function ArticleList() {
 
   const unreadCount = displayArticles.filter((a) => a.unread).length;
   const hasNoFeeds = !isFeedsLoading && feeds.length === 0;
-
-  // Reset the follow-up "mark all unread as read" offer whenever the viewed source changes.
-  useEffect(() => {
-    setOfferMarkAllSourceRead(false);
-  }, [selectedFeedId, selectedGroupId, articleFilter]);
 
   const handleToggleRead = useCallback(
     async (article: Item) => {
@@ -201,6 +200,7 @@ export function ArticleList() {
   );
 
   const handleMarkAllAsRead = async () => {
+    const generation = sourceOffer.generation;
     let unreadIds = displayArticles
       .filter((a) => a.unread && a.id > 0)
       .map((a) => a.id);
@@ -241,7 +241,7 @@ export function ArticleList() {
       } else if (itemsQuery.hasNextPage) {
         // More unread items may exist beyond what's currently loaded (paginated),
         // so offer a follow-up action to mark the entire source as read.
-        setOfferMarkAllSourceRead(true);
+        sourceOffer.offer(generation);
       }
     } catch (error) {
       console.error("Failed to mark all as read:", error);
@@ -249,12 +249,13 @@ export function ArticleList() {
   };
 
   const handleMarkAllSourceAsRead = async () => {
+    const generation = sourceOffer.generation;
     try {
       await markAllItemsRead.mutateAsync({
         feedId: selectedFeedId,
         groupId: selectedGroupId,
       });
-      setOfferMarkAllSourceRead(false);
+      sourceOffer.withdraw(generation);
     } catch (error) {
       console.error("Failed to mark all unread as read:", error);
     }
