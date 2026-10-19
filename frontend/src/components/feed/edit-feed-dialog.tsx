@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { AlertCircle, ChevronDown, Save, Trash2, X } from "lucide-react";
 import {
   Dialog,
@@ -58,7 +58,11 @@ export function EditFeedDialog() {
   const urlInputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
 
-  useEffect(() => {
+  // Load the feed into the form whenever editingFeed changes (including back
+  // to the same feed after closing), during render rather than in an effect.
+  const [loadedFeed, setLoadedFeed] = useState<typeof editingFeed>(null);
+  if (editingFeed !== loadedFeed) {
+    setLoadedFeed(editingFeed);
     if (editingFeed) {
       setUrl(editingFeed.link);
       setName(editingFeed.name);
@@ -68,7 +72,7 @@ export function EditFeedDialog() {
       setIsAdvancedOpen(!!editingFeed.proxy);
       setIsMobileErrorTooltipOpen(false);
     }
-  }, [editingFeed]);
+  }
 
   const resetForm = () => {
     setUrl("");
