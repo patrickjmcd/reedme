@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.1](https://github.com/patrickjmcd/reedme/compare/v1.3.0...v1.3.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lucide-react to v1 ([#59](https://github.com/patrickjmcd/reedme/issues/59)) ([7715974](https://github.com/patrickjmcd/reedme/commit/7715974eb74f8a8b6edfcf086c073911c8a5f3ac))
+* **deps:** update dependency shadcn to v4 ([#60](https://github.com/patrickjmcd/reedme/issues/60)) ([e237acf](https://github.com/patrickjmcd/reedme/commit/e237acf2c42e2de531b2b8f840cf85149afe3d3d))
+* **deps:** update go non-major dependencies ([#64](https://github.com/patrickjmcd/reedme/issues/64)) ([0848ecf](https://github.com/patrickjmcd/reedme/commit/0848ecfe3bfb3547b911979b7b680bc0f2d5e4e4))
+* **deps:** update module modernc.org/sqlite to v1.61.0 ([#69](https://github.com/patrickjmcd/reedme/issues/69)) ([b045e08](https://github.com/patrickjmcd/reedme/commit/b045e08ec7567ac135cdc60f8ae4de9b3036ebcb))
+* **frontend:** clear the remaining ESLint errors ([#63](https://github.com/patrickjmcd/reedme/issues/63)) ([98508df](https://github.com/patrickjmcd/reedme/commit/98508df1de43d31a3907a07b8ecd9282f940ae86))
+
 ## [1.3.0](https://github.com/patrickjmcd/reedme/compare/v1.2.0...v1.3.0) (2026-09-03)
 
 
